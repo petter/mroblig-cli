@@ -3,7 +3,15 @@ import * as https from "https";
 import axios from "axios";
 import FormData from "form-data";
 
-fs.read;
+const extract = (res, trueOrFalse: "true" | "false") => {
+  const re = new RegExp(`<li class="${trueOrFalse}">(.*)<\/li>`, "g");
+  const matches = res.data.matchAll(re);
+  return Array.from(matches).map(match => match[1]);
+};
+
+const parse = res => {
+  console.log(extract(res, "true"));
+};
 
 console.log(process.argv[2]);
 const ttlFile = fs.createReadStream(process.argv[2]);
@@ -22,6 +30,4 @@ instance
       ...formData.getHeaders()
     }
   })
-  .then(res => {
-    console.log(res.data);
-  });
+  .then(parse);
