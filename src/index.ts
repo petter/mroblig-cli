@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as https from "https";
 import axios from "axios";
 import FormData from "form-data";
+import { colorLog } from "./utils";
 
 const extract = (res, trueOrFalse: "true" | "false") => {
   const re = new RegExp(`<li class="${trueOrFalse}">(.*)<\/li>`, "g");
@@ -36,7 +37,10 @@ if (typeof require !== "undefined" && require.main === module) {
     })
     .then(parse)
     .then(([trueMatches, falseMatches]) => {
-      console.log(trueMatches.map(s => `True: ${s}`).join("\n"));
-      console.log(falseMatches.map(s => `False: ${s}`).join("\n"));
+      colorLog("True matches:", "32");
+      colorLog(trueMatches.map(s => `True: ${s}`).join("\n"), "32");
+
+      colorLog("\nFalse matches:", "31");
+      colorLog(falseMatches.map(s => `False: ${s}`).join("\n"), "31");
     });
 }
