@@ -10,24 +10,33 @@ const extract = (res, trueOrFalse: "true" | "false") => {
 };
 
 const parse = res => {
-  console.log(extract(res, "true"));
+  const trueMatches = extract(res, "true");
+  const falseMatches = extract(res, "false");
+
+  return [trueMatches, falseMatches];
 };
 
-console.log(process.argv[2]);
-const ttlFile = fs.createReadStream(process.argv[2]);
-const formData = new FormData();
-formData.append("modelfile", ttlFile);
+if (typeof require !== "undefined" && require.main === module) {
+  console.log(process.argv[2]);
+  const ttlFile = fs.createReadStream(process.argv[2]);
+  const formData = new FormData();
+  formData.append("modelfile", ttlFile);
 
-const instance = axios.create({
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: false
-  })
-});
+  const instance = axios.create({
+    httpsAgent: new https.Agent({
+      rejectUnauthorized: false
+    })
+  });
 
-instance
-  .post("https://sws.ifi.uio.no/mroblig/1", formData, {
-    headers: {
-      ...formData.getHeaders()
-    }
-  })
-  .then(parse);
+  instance
+    .post("https://sws.ifi.uio.no/mroblig/1", formData, {
+      headers: {
+        ...formData.getHeaders()
+      }
+    })
+    .then(parse)
+    .then(([trueMatches, falseMatches]) => {
+      console.log(trueMatches.map(s => `True: ${s}`).join("\n"));
+      console.log(falseMatches.map(s => `False: ${s}`).join("\n"));
+    });
+}
