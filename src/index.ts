@@ -37,6 +37,9 @@ if (typeof require !== "undefined" && require.main === module) {
     })
     .then(parse)
     .then(([trueMatches, falseMatches]) => {
+      if (trueMatches.length === 0 && falseMatches.length === 0)
+        return colorLog("Syntax error?", "31");
+
       colorLog("True matches:", "32");
       colorLog(trueMatches.map(s => `True: ${s}`).join("\n"), "32");
 
