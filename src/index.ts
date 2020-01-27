@@ -17,9 +17,22 @@ const parse = res => {
   return [trueMatches, falseMatches];
 };
 
+const printUsageAndDie = () => {
+  console.log(
+    "Usage:   mroblig OBLIGNR FILENAME\nExample: mroblig 1 simpsons.ttl"
+  );
+  process.exit(0);
+};
+
+const usageCheck = (argv: string[]) =>
+  argv.length === 4 && ["1", "2", "3"].includes(argv[2]);
+
 if (typeof require !== "undefined" && require.main === module) {
-  console.log(process.argv[2]);
-  const ttlFile = fs.createReadStream(process.argv[2]);
+  if (!usageCheck(process.argv)) printUsageAndDie();
+
+  const obligNr = process.argv[2];
+  const ttlFile = fs.createReadStream(process.argv[3]);
+
   const formData = new FormData();
   formData.append("modelfile", ttlFile);
 
@@ -30,7 +43,7 @@ if (typeof require !== "undefined" && require.main === module) {
   });
 
   instance
-    .post("https://sws.ifi.uio.no/mroblig/1", formData, {
+    .post(`https://sws.ifi.uio.no/mroblig/${obligNr}`, formData, {
       headers: {
         ...formData.getHeaders()
       }
