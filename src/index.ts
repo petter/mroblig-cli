@@ -27,11 +27,11 @@ const printUsageAndDie = () => {
 const usageCheck = (argv: string[]) =>
   argv.length === 4 && ["1", "2", "3"].includes(argv[2]);
 
-if (typeof require !== "undefined" && require.main === module) {
-  if (!usageCheck(process.argv)) printUsageAndDie();
+export const main = (argv) => {
+  if (!usageCheck(argv)) printUsageAndDie();
 
-  const obligNr = process.argv[2];
-  const ttlFile = fs.createReadStream(process.argv[3]);
+  const obligNr = argv[2];
+  const ttlFile = fs.createReadStream(argv[3]);
 
   const formData = new FormData();
   formData.append("modelfile", ttlFile);
@@ -60,3 +60,5 @@ if (typeof require !== "undefined" && require.main === module) {
       colorLog(falseMatches.map(s => `False: ${s}`).join("\n"), "31");
     });
 }
+
+module.exports = main
