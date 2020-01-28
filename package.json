@@ -1,6 +1,6 @@
 {
   "name": "mroblig-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "repository": "github:pettersmoen/mroblig-cli",
   "main": "src/index.ts",
