@@ -19,7 +19,7 @@ const parse = res => {
 
 const printUsageAndDie = () => {
   console.log(
-    "Usage:   mroblig OBLIGNR FILENAME\nExample: mroblig 1 simpsons.ttl"
+    "Usage:   mroblig-cli OBLIGNR FILENAME\nExample: mroblig-cli 1 simpsons.ttl"
   );
   process.exit(0);
 };
@@ -27,7 +27,7 @@ const printUsageAndDie = () => {
 const usageCheck = (argv: string[]) =>
   argv.length === 4 && ["1", "2", "3"].includes(argv[2]);
 
-export const main = (argv) => {
+export const main = argv => {
   if (!usageCheck(argv)) printUsageAndDie();
 
   const obligNr = argv[2];
@@ -53,12 +53,26 @@ export const main = (argv) => {
       if (trueMatches.length === 0 && falseMatches.length === 0)
         return colorLog("Syntax error?", "31");
 
-      colorLog("True matches:", "32");
-      colorLog(trueMatches.map(s => `True: ${s}`).join("\n"), "32");
+      colorLog(
+        trueMatches.length === 0
+          ? "No tests passed"
+          : trueMatches.map(s => `True: ${s}`).join("\n"),
+        "32"
+      );
 
-      colorLog("\nFalse matches:", "31");
-      colorLog(falseMatches.map(s => `False: ${s}`).join("\n"), "31");
+      console.log();
+      colorLog(
+        falseMatches.length === 0
+          ? "No tests failed"
+          : falseMatches.map(s => `False: ${s}`).join("\n"),
+        "31"
+      );
+
+      const totalTests = trueMatches.length + falseMatches.length;
+      console.log(
+        `\nPassed (${trueMatches.length}/${totalTests}) - Failed (${falseMatches.length}/${totalTests})`
+      );
     });
-}
+};
 
-module.exports = main
+module.exports = main;

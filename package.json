@@ -1,12 +1,12 @@
 {
   "name": "mroblig-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "repository": "github:pettersmoen/mroblig-cli",
   "main": "src/index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
-	"build": "tsc",
+    "start": "npm run build && ./cli.js",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Petter Sæther Moen and Gaute Berge",

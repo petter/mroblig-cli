@@ -37,7 +37,7 @@ var parse = function (res) {
     return [trueMatches, falseMatches];
 };
 var printUsageAndDie = function () {
-    console.log("Usage:   mroblig OBLIGNR FILENAME\nExample: mroblig 1 simpsons.ttl");
+    console.log("Usage:   mroblig-cli OBLIGNR FILENAME\nExample: mroblig-cli 1 simpsons.ttl");
     process.exit(0);
 };
 var usageCheck = function (argv) {
@@ -64,10 +64,15 @@ exports.main = function (argv) {
         var trueMatches = _a[0], falseMatches = _a[1];
         if (trueMatches.length === 0 && falseMatches.length === 0)
             return utils_1.colorLog("Syntax error?", "31");
-        utils_1.colorLog("True matches:", "32");
-        utils_1.colorLog(trueMatches.map(function (s) { return "True: " + s; }).join("\n"), "32");
-        utils_1.colorLog("\nFalse matches:", "31");
-        utils_1.colorLog(falseMatches.map(function (s) { return "False: " + s; }).join("\n"), "31");
+        utils_1.colorLog(trueMatches.length === 0
+            ? "No tests passed"
+            : trueMatches.map(function (s) { return "True: " + s; }).join("\n"), "32");
+        console.log();
+        utils_1.colorLog(falseMatches.length === 0
+            ? "No tests failed"
+            : falseMatches.map(function (s) { return "False: " + s; }).join("\n"), "31");
+        var totalTests = trueMatches.length + falseMatches.length;
+        console.log("\nPassed (" + trueMatches.length + "/" + totalTests + ") - Failed (" + falseMatches.length + "/" + totalTests + ")");
     });
 };
 module.exports = exports.main;
