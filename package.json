@@ -1,7 +1,8 @@
 {
-  "name": "mroblig-improved",
+  "name": "mroblig-cli",
   "version": "1.0.0",
   "description": "",
+  "repository": "github:pettersmoen/mroblig-cli",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
