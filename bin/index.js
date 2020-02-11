@@ -37,11 +37,11 @@ var parse = function (res) {
     return [trueMatches, falseMatches];
 };
 var printUsageAndDie = function () {
-    console.log("Usage:   mroblig-cli OBLIGNR FILENAME\nExample: mroblig-cli 1 simpsons.ttl");
+    console.log("Usage:   mroblig-cli OBLIGNR FILENAME [OBLIG3 EXERCISE NUMBER]\nmroblig-cli 1 simpsons.ttl");
     process.exit(0);
 };
 var usageCheck = function (argv) {
-    return argv.length === 4 && ["1", "2", "3"].includes(argv[2]);
+    return argv.length >= 4 && ["1", "2", "3"].includes(argv[2]);
 };
 exports.main = function (argv) {
     if (!usageCheck(argv))
@@ -49,7 +49,10 @@ exports.main = function (argv) {
     var obligNr = argv[2];
     var ttlFile = fs.createReadStream(argv[3]);
     var formData = new form_data_1["default"]();
-    formData.append("modelfile", ttlFile);
+    formData.append(obligNr == "3" ? "sparqlfile" : "modelfile", ttlFile);
+    if (argv[4]) {
+        formData.append("exercise", utils_1.oblig3ExerciseMap(argv[4]));
+    }
     var instance = axios_1["default"].create({
         httpsAgent: new https.Agent({
             rejectUnauthorized: false
@@ -58,6 +61,10 @@ exports.main = function (argv) {
     instance
         .post("https://sws.ifi.uio.no/mroblig/" + obligNr, formData, {
         headers: __assign({}, formData.getHeaders())
+    })
+        .then(function (result) {
+        console.log(result.data);
+        return result;
     })
         .then(parse)
         .then(function (_a) {

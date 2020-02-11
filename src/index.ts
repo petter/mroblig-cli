@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as https from "https";
 import axios from "axios";
 import FormData from "form-data";
-import { colorLog } from "./utils";
+import { colorLog, oblig3ExerciseMap } from "./utils";
 
 const extract = (res, trueOrFalse: "true" | "false") => {
   const re = new RegExp(`<li class="${trueOrFalse}">(.*)<\/li>`, "g");
@@ -19,13 +19,13 @@ const parse = res => {
 
 const printUsageAndDie = () => {
   console.log(
-    "Usage:   mroblig-cli OBLIGNR FILENAME\nExample: mroblig-cli 1 simpsons.ttl"
+    "Usage:   mroblig-cli OBLIGNR FILENAME [OBLIG3 EXERCISE NUMBER]\nmroblig-cli 1 simpsons.ttl"
   );
   process.exit(0);
 };
 
 const usageCheck = (argv: string[]) =>
-  argv.length === 4 && ["1", "2", "3"].includes(argv[2]);
+  argv.length >= 4 && ["1", "2", "3"].includes(argv[2]);
 
 export const main = argv => {
   if (!usageCheck(argv)) printUsageAndDie();
@@ -34,7 +34,10 @@ export const main = argv => {
   const ttlFile = fs.createReadStream(argv[3]);
 
   const formData = new FormData();
-  formData.append("modelfile", ttlFile);
+  formData.append(obligNr == "3" ? "sparqlfile" : "modelfile", ttlFile);
+  if (argv[4]) {
+    formData.append("exercise", oblig3ExerciseMap(argv[4]));
+  }
 
   const instance = axios.create({
     httpsAgent: new https.Agent({
@@ -47,6 +50,10 @@ export const main = argv => {
       headers: {
         ...formData.getHeaders()
       }
+    })
+    .then(result => {
+      console.log(result.data);
+      return result;
     })
     .then(parse)
     .then(([trueMatches, falseMatches]) => {
