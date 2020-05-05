@@ -25,7 +25,7 @@ const printUsageAndDie = () => {
 };
 
 const usageCheck = (argv: string[]) =>
-  argv.length >= 4 && ["1", "2", "3"].includes(argv[2]);
+  argv.length >= 4 && ["1", "2", "3", "7"].includes(argv[2]);
 
 export const main = argv => {
   if (!usageCheck(argv)) printUsageAndDie();

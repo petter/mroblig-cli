@@ -41,7 +41,7 @@ var printUsageAndDie = function () {
     process.exit(0);
 };
 var usageCheck = function (argv) {
-    return argv.length >= 4 && ["1", "2", "3"].includes(argv[2]);
+    return argv.length >= 4 && ["1", "2", "3", "7"].includes(argv[2]);
 };
 exports.main = function (argv) {
     if (!usageCheck(argv))
