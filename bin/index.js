@@ -27,9 +27,9 @@ var axios_1 = __importDefault(require("axios"));
 var form_data_1 = __importDefault(require("form-data"));
 var utils_1 = require("./utils");
 var extract = function (res, trueOrFalse) {
-    var re = new RegExp("<li class=\"" + trueOrFalse + "\">(.*)</li>", "g");
+    var re = new RegExp("<li class=\"" + trueOrFalse + "\">([\\s\\S]*?)</li>", "mg");
     var matches = res.data.matchAll(re);
-    return Array.from(matches).map(function (match) { return match[1]; });
+    return Array.from(matches).map(function (match) { return match[1].trim(); });
 };
 var parse = function (res) {
     var trueMatches = extract(res, "true");
@@ -61,10 +61,6 @@ exports.main = function (argv) {
     instance
         .post("https://sws.ifi.uio.no/mroblig/" + obligNr, formData, {
         headers: __assign({}, formData.getHeaders())
-    })
-        .then(function (result) {
-        console.log(result.data);
-        return result;
     })
         .then(parse)
         .then(function (_a) {

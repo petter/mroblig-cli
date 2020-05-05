@@ -5,12 +5,12 @@ import FormData from "form-data";
 import { colorLog, oblig3ExerciseMap } from "./utils";
 
 const extract = (res, trueOrFalse: "true" | "false") => {
-  const re = new RegExp(`<li class="${trueOrFalse}">(.*)<\/li>`, "g");
+  const re = new RegExp(`<li class="${trueOrFalse}">([\\s\\S]*?)<\/li>`, "mg");
   const matches = res.data.matchAll(re);
-  return Array.from(matches).map(match => match[1]);
+  return Array.from(matches).map((match) => match[1].trim());
 };
 
-const parse = res => {
+const parse = (res) => {
   const trueMatches = extract(res, "true");
   const falseMatches = extract(res, "false");
 
@@ -27,7 +27,7 @@ const printUsageAndDie = () => {
 const usageCheck = (argv: string[]) =>
   argv.length >= 4 && ["1", "2", "3", "7"].includes(argv[2]);
 
-export const main = argv => {
+export const main = (argv) => {
   if (!usageCheck(argv)) printUsageAndDie();
 
   const obligNr = argv[2];
@@ -41,19 +41,15 @@ export const main = argv => {
 
   const instance = axios.create({
     httpsAgent: new https.Agent({
-      rejectUnauthorized: false
-    })
+      rejectUnauthorized: false,
+    }),
   });
 
   instance
     .post(`https://sws.ifi.uio.no/mroblig/${obligNr}`, formData, {
       headers: {
-        ...formData.getHeaders()
-      }
-    })
-    .then(result => {
-      console.log(result.data);
-      return result;
+        ...formData.getHeaders(),
+      },
     })
     .then(parse)
     .then(([trueMatches, falseMatches]) => {
@@ -63,7 +59,7 @@ export const main = argv => {
       colorLog(
         trueMatches.length === 0
           ? "No tests passed"
-          : trueMatches.map(s => `True: ${s}`).join("\n"),
+          : trueMatches.map((s) => `True: ${s}`).join("\n"),
         "32"
       );
 
@@ -71,7 +67,7 @@ export const main = argv => {
       colorLog(
         falseMatches.length === 0
           ? "No tests failed"
-          : falseMatches.map(s => `False: ${s}`).join("\n"),
+          : falseMatches.map((s) => `False: ${s}`).join("\n"),
         "31"
       );
 
